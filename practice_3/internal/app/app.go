@@ -48,7 +48,7 @@ func Run() {
 	finalHandler := middleware.LoggingMiddleware(handlerWithAuth)
 
 	log.Println("Server is running on :8080...")
-	if err := http.ListenAndServe(":8080", finalHandler); err != nil {
+	if err := http.ListenAndServe("localhost:8080", finalHandler); err != nil {
 		log.Fatalf("Error starting server: %s", err.Error())
 	}
 }
