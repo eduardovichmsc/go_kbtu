@@ -1,0 +1,39 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+CREATE TABLE IF NOT EXISTS users (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    gender VARCHAR(50),
+    birth_date DATE
+);
+
+CREATE TABLE IF NOT EXISTS user_friends (
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    friend_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, friend_id),
+    CONSTRAINT prevent_self_friend CHECK (user_id != friend_id)
+);
+
+INSERT INTO users (id, name, email, gender, birth_date) VALUES
+('11111111-1111-1111-1111-111111111111', 'Alice', 'alice@test.com', 'female', '2000-01-01'),
+('22222222-2222-2222-2222-222222222222', 'Bob', 'bob@test.com', 'male', '1999-05-12'),
+('33333333-3333-3333-3333-333333333333', 'Charlie', 'charlie@test.com', 'male', '2001-08-23'),
+('44444444-4444-4444-4444-444444444444', 'Diana', 'diana@test.com', 'female', '1998-11-30'),
+('55555555-5555-5555-5555-555555555555', 'Eve', 'eve@test.com', 'female', '2002-02-14');
+
+DO $$ 
+BEGIN 
+    FOR i IN 6..20 LOOP 
+        INSERT INTO users (name, email, gender, birth_date) 
+        VALUES ('User ' || i, 'user'|| i ||'@test.com', 'unknown', '2000-01-01'); 
+    END LOOP; 
+END $$;
+
+INSERT INTO user_friends (user_id, friend_id) VALUES
+('11111111-1111-1111-1111-111111111111', '33333333-3333-3333-3333-333333333333'),
+('11111111-1111-1111-1111-111111111111', '44444444-4444-4444-4444-444444444444'),
+('11111111-1111-1111-1111-111111111111', '55555555-5555-5555-5555-555555555555'),
+('22222222-2222-2222-2222-222222222222', '33333333-3333-3333-3333-333333333333'),
+('22222222-2222-2222-2222-222222222222', '44444444-4444-4444-4444-444444444444'),
+('22222222-2222-2222-2222-222222222222', '55555555-5555-5555-5555-555555555555');
