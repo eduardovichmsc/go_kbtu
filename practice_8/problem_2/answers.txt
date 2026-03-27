@@ -1,0 +1,24 @@
+
+
+
+
+1. Write 1-sentence technical-style explanation for your teamlead,
+describing why the final answer is not 1000.
+- Reason is that the counter++ operation is non-atomic, which causes a race condition where concurrent go-routines read the same value and overwrite each other’s updates.
+
+
+
+
+2. Use built-in Go tool for detecting such problems. Provide the
+result of it: [go run -race {filename}]
+WARNING: DATA RACE
+Read at 0x00c000122018 by goroutine 8:
+  main.main.func1()
+      /path/to/legacy.go:12 +0x4c
+---------------------------------
+Previous write at 0x00c000122018 by goroutine 7:
+  main.main.func1()
+      /path/to/legacy.go:12 +0x64
+
+
+
